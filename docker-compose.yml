@@ -27,6 +27,8 @@ services:
   staywise-app:
     build: .
     container_name: staywise-app
+    env_file:
+      - .env
     depends_on:
       - postgres
     ports:
