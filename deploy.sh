@@ -23,7 +23,7 @@ fi
 
 # Pull latest code
 log "[INFO] Pulling latest code from Git..."
-git pull origin main || error_exit "Git pull failed."
+git pull origin CORE || error_exit "Git pull failed."
 
 # Stop and remove old containers
 log "[INFO] Stopping existing containers..."
