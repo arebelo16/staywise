@@ -8,6 +8,7 @@ import com.staywise.model.User;
 import com.staywise.repository.EmailTokenRepository;
 import com.staywise.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final EmailService emailService;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     public UserResponseDto register(UserDto dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
@@ -47,7 +50,7 @@ public class UserService {
         token.setExpiresAt(LocalDateTime.now().plusHours(24));
         emailTokenRepository.save(token);
 
-        String link = "https://staywise.com/auth/confirm?token=" + token.getToken();
+        String link = baseUrl + "auth/confirm?token=" + token.getToken();
         String message = "Olá, confirma o teu email clicando neste link: " + link;
         emailService.sendEmail(user.getEmail(), "Confirmação de Email - Staywise", message);
 
