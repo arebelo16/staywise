@@ -9,6 +9,7 @@ import com.staywise.model.User;
 import com.staywise.repository.EmailTokenRepository;
 import com.staywise.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserService {
 
     private final UserRepository userRepository;
@@ -33,10 +35,12 @@ public class UserService {
 
     public UserResponseDto register(UserDto dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
+            log.error("Username: {} already exists", dto.getUsername());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username já existe");
         }
 
         if (userRepository.findAll().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(dto.getEmail()))) {
+            log.error("Email: {} already exists", dto.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já existe");
         }
 
