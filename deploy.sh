@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-BRANCH="${1:-main}"
+BRANCH="${1:-CORE}"
 LOG_FILE="./deploy.log"
 TIMESTAMP() { date "+%Y-%m-%d %H:%M:%S"; }
 
