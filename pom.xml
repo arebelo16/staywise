@@ -81,7 +81,13 @@
 
     <build>
         <plugins>
-            <!-- Plugin Maven Java 21 + Annotation Processors -->
+            <!-- Plugin do Spring Boot para gerar JAR executável -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Plugin de compilação já existente -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -105,4 +111,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
