@@ -4,6 +4,7 @@ import com.staywise.dto.UserDto;
 import com.staywise.dto.UserResponseDto;
 import com.staywise.mapper.UserMapper;
 import com.staywise.model.EmailConfirmationToken;
+import com.staywise.model.Role;
 import com.staywise.model.User;
 import com.staywise.repository.EmailTokenRepository;
 import com.staywise.repository.UserRepository;
@@ -42,6 +43,7 @@ public class UserService {
         User user = userMapper.toEntity(dto);
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setEnabled(false);
+        user.setRole(Role.USER);
         user = userRepository.save(user);
 
         EmailConfirmationToken token = new EmailConfirmationToken();
