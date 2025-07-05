@@ -4,6 +4,7 @@ set -e
 
 LOG_FILE="./deploy.log"
 TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+BRANCH=${1:-CORE}
 
 log() {
   echo "[$TIMESTAMP] $1" | tee -a "$LOG_FILE"
@@ -22,8 +23,8 @@ if [ ! -d .git ]; then
 fi
 
 # Pull latest code
-log "[INFO] Pulling latest code from Git..."
-git pull origin CORE || error_exit "Git pull failed."
+log "[INFO] Pulling latest code from Git branch '$BRANCH'..."
+git pull origin "$BRANCH" || error_exit "Git pull failed."
 
 # Stop and remove old containers
 log "[INFO] Stopping existing containers..."
