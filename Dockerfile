@@ -10,6 +10,6 @@ WORKDIR /app
 COPY --from=builder /app/target/staywise-0.0.1-SNAPSHOT.jar staywise.jar
 
 EXPOSE 8080
-EXPOSE 5005  # Debug remoto
+EXPOSE 5005
 
 CMD ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "staywise.jar"]
