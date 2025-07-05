@@ -19,4 +19,10 @@ public class RegisterController {
     public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserDto dto) {
         return ResponseEntity.ok(userService.register(dto));
     }
+
+    @GetMapping("/confirm")
+    public ResponseEntity<String> confirmEmail(@RequestParam String token) {
+        userService.confirmEmail(token);
+        return ResponseEntity.ok("Email confirmado com sucesso!");
+    }
 }

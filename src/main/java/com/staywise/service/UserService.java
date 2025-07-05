@@ -56,4 +56,19 @@ public class UserService {
 
         return userMapper.toDto(user);
     }
+
+    public void confirmEmail(String token) {
+        EmailConfirmationToken confirmation = emailTokenRepository.findByToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token inválido"));
+
+        if (confirmation.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expirado");
+        }
+
+        User user = confirmation.getUser();
+        user.setEnabled(true);
+        userRepository.save(user);
+        emailTokenRepository.delete(confirmation);
+    }
+
 }
