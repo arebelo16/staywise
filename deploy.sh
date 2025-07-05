@@ -1,40 +1,36 @@
 #!/bin/bash
 
-### ───────── CONFIG ─────────
-PROJECT_NAME="Staywise"
-PROJECT_DIR=$(pwd)
-LOG_FILE="$PROJECT_DIR/deploy.log"
-BRANCH="CORE"
-DOCKER_COMPOSE="docker-compose"
-### ──────────────────────────
+set -e
+
+LOG_FILE="./deploy.log"
+TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
 
 log() {
-  echo "$(date '+%Y-%m-%d %H:%M:%S') [INFO] $1" | tee -a "$LOG_FILE"
+  echo "[$TIMESTAMP] $1" | tee -a "$LOG_FILE"
 }
 
-error() {
-  echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] $1" | tee -a "$LOG_FILE" >&2
+error_exit() {
+  echo "[$TIMESTAMP] [ERROR] $1" | tee -a "$LOG_FILE"
   exit 1
 }
 
-log "===== Restarting $PROJECT_NAME ====="
+log "[INFO] Starting deployment process..."
+
+# Check if .git exists
+if [ ! -d .git ]; then
+  error_exit "This is not a Git repository."
+fi
 
 # Pull latest code
-log "Fetching latest code from branch '$BRANCH'..."
-git reset --hard || error "Git reset failed"
-git clean -fd || error "Git clean failed"
-git pull origin "$BRANCH" || error "Git pull failed"
+log "[INFO] Pulling latest code from Git..."
+git pull origin main || error_exit "Git pull failed."
 
-# Stop current containers
-log "Stopping Docker containers..."
-$DOCKER_COMPOSE down || error "Failed to stop containers"
+# Stop and remove old containers
+log "[INFO] Stopping existing containers..."
+docker-compose down || error_exit "Failed to stop containers."
 
-# Rebuild everything
-log "Rebuilding project..."
-$DOCKER_COMPOSE build || error "Docker build failed"
+# Build and start new containers
+log "[INFO] Building and starting containers..."
+docker-compose up -d --build || error_exit "Failed to start containers."
 
-# Start again
-log "Starting services..."
-$DOCKER_COMPOSE up -d || error "Failed to start containers"
-
-log "$PROJECT_NAME successfully restarted ✅"
+log "[SUCCESS] Deployment complete!"
