@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -36,12 +37,15 @@ public class UserService {
     public UserResponseDto register(UserDto dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
             log.error("Username: {} already exists", dto.getUsername());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username já existe");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exist");
         }
 
-        if (userRepository.findAll().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(dto.getEmail()))) {
-            log.error("Email: {} already exists", dto.getEmail());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já existe");
+        String email = dto.getEmail();
+        if (!StringUtils.hasText(email)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Invalid");
+
+        if (userRepository.findAll().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(email))) {
+            log.error("Email: {} already exists", email);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
         }
 
         User user = userMapper.toEntity(dto);
@@ -57,8 +61,8 @@ public class UserService {
         emailTokenRepository.save(token);
 
         String link = baseUrl + "auth/confirm?token=" + token.getToken();
-        String message = "Olá, confirma o teu email clicando neste link: " + link;
-        emailService.sendEmail(user.getEmail(), "Confirmação de Email - Staywise", message);
+        String message = "Hello, click here to confirm your email: " + link;
+        emailService.sendEmail(user.getEmail(), "Email Confirmation - Staywise", message);
 
         return userMapper.toDto(user);
     }
