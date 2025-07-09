@@ -1,17 +1,15 @@
-1. Cria o ficheiro `.env` baseado em `.env.example`
-2. Faz build:
+1. Create `.env` file based on `.env.example`
+2. Build:
    ```bash
    docker-compose down
    docker-compose up -d --build
    ```
-3. No IntelliJ:
-    - Vai a Run > Edit Configurations > Remote JVM Debug
+3. IntelliJ:
+    - Run > Edit Configurations > Remote JVM Debug
     - Host: `116.203.136.176`
     - Port: `5005`
-    - Nome: Staywise Remote Debug
+    - Nome: Domiledge Server Remote Debug
 
-4. Mete breakpoints, clica em `Debug` e estás ligado 🔥
-
-5. Abre o pgAdmin em: http://116.203.136.176:5050
-    - Email: admin@staywise.com
-    - Pass: admin
+5. pgAdmin: http://116.203.136.176:5050
+    - Email: {PGADMIN_EMAIL} defined in .env
+    - Pass: {PGADMIN_PASSWORD} defined in .env
