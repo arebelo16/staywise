@@ -1,8 +1,8 @@
-package com.staywise.controller;
+package com.domiledge.controller;
 
-import com.staywise.dto.UserDto;
-import com.staywise.dto.UserResponseDto;
-import com.staywise.service.UserService;
+import com.domiledge.dto.UserDto;
+import com.domiledge.dto.UserResponseDto;
+import com.domiledge.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

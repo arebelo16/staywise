@@ -1,4 +1,4 @@
-package com.staywise.dto;
+package com.domiledge.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

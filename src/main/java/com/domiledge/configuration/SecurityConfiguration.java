@@ -1,7 +1,7 @@
-package com.staywise.configuration;
+package com.domiledge.configuration;
 
-import com.staywise.repository.UserRepository;
-import com.staywise.security.JwtAuthenticationFilter;
+import com.domiledge.repository.UserRepository;
+import com.domiledge.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

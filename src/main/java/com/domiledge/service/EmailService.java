@@ -1,4 +1,4 @@
-package com.staywise.service;
+package com.domiledge.service;
 
 import com.sendgrid.Method;
 import com.sendgrid.Request;

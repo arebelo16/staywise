@@ -1,4 +1,4 @@
-package com.staywise.model;
+package com.domiledge.model;
 
 import org.springframework.security.core.GrantedAuthority;
 

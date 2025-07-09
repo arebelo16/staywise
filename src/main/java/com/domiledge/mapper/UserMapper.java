@@ -1,8 +1,8 @@
-package com.staywise.mapper;
+package com.domiledge.mapper;
 
-import com.staywise.dto.UserDto;
-import com.staywise.dto.UserResponseDto;
-import com.staywise.model.User;
+import com.domiledge.dto.UserDto;
+import com.domiledge.dto.UserResponseDto;
+import com.domiledge.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

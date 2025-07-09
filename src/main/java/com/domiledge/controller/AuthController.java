@@ -1,10 +1,10 @@
-package com.staywise.controller;
+package com.domiledge.controller;
 
-import com.staywise.dto.AuthRequestDto;
-import com.staywise.dto.AuthResponseDto;
-import com.staywise.model.User;
-import com.staywise.repository.UserRepository;
-import com.staywise.service.JwtService;
+import com.domiledge.dto.AuthRequestDto;
+import com.domiledge.dto.AuthResponseDto;
+import com.domiledge.model.User;
+import com.domiledge.repository.UserRepository;
+import com.domiledge.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;

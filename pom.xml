@@ -11,10 +11,10 @@
         <relativePath/> <!-- Deixa isto como está -->
     </parent>
 
-    <groupId>com.staywise</groupId>
-    <artifactId>staywise</artifactId>
+    <groupId>com.domiledge</groupId>
+    <artifactId>domiledge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Staywise</name>
+    <name>Domiledge</name>
     <description>Gestor Inteligente de Alojamento Local</description>
     <packaging>jar</packaging>
 

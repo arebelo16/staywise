@@ -1,4 +1,4 @@
-package com.staywise.model;
+package com.domiledge.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

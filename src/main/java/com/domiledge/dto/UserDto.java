@@ -1,6 +1,6 @@
-package com.staywise.dto;
+package com.domiledge.dto;
 
-import com.staywise.model.Role;
+import com.domiledge.model.Role;
 import lombok.Data;
 
 @Data

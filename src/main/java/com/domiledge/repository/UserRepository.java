@@ -1,6 +1,6 @@
-package com.staywise.repository;
+package com.domiledge.repository;
 
-import com.staywise.model.User;
+import com.domiledge.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

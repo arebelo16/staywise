@@ -1,6 +1,6 @@
-package com.staywise.service;
+package com.domiledge.service;
 
-import com.staywise.model.User;
+import com.domiledge.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;

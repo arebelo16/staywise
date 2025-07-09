@@ -1,13 +1,13 @@
-package com.staywise.service;
+package com.domiledge.service;
 
-import com.staywise.dto.UserDto;
-import com.staywise.dto.UserResponseDto;
-import com.staywise.mapper.UserMapper;
-import com.staywise.model.EmailConfirmationToken;
-import com.staywise.model.Role;
-import com.staywise.model.User;
-import com.staywise.repository.EmailTokenRepository;
-import com.staywise.repository.UserRepository;
+import com.domiledge.dto.UserDto;
+import com.domiledge.dto.UserResponseDto;
+import com.domiledge.mapper.UserMapper;
+import com.domiledge.model.EmailConfirmationToken;
+import com.domiledge.model.Role;
+import com.domiledge.model.User;
+import com.domiledge.repository.EmailTokenRepository;
+import com.domiledge.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,7 +62,7 @@ public class UserService {
 
         String link = baseUrl + "auth/confirm?token=" + token.getToken();
         String message = "Hello, click here to confirm your email: " + link;
-        emailService.sendEmail(user.getEmail(), "Email Confirmation - Staywise", message);
+        emailService.sendEmail(user.getEmail(), "Email Confirmation - Domiledge", message);
 
         return userMapper.toDto(user);
     }

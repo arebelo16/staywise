@@ -1,8 +1,8 @@
-package com.staywise.security;
+package com.domiledge.security;
 
-import com.staywise.model.User;
-import com.staywise.repository.UserRepository;
-import com.staywise.service.JwtService;
+import com.domiledge.model.User;
+import com.domiledge.repository.UserRepository;
+import com.domiledge.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,8 +1,8 @@
-package com.staywise.controller;
+package com.domiledge.controller;
 
-import com.staywise.dto.UserResponseDto;
-import com.staywise.mapper.UserMapper;
-import com.staywise.model.User;
+import com.domiledge.dto.UserResponseDto;
+import com.domiledge.mapper.UserMapper;
+import com.domiledge.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
