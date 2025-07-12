@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,16 +32,22 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequestDto request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto request) {
+        User user;
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow();
+            user = userRepository.findByUsername(request.getUsername())
+                    .orElseThrow();
+        } catch (AuthenticationException | NoSuchElementException exception) {
+            log.error("[ERROR] {} - Authentication Failed for {}", LocalDateTime.now(), exception);
+            return ResponseEntity.badRequest().body(Map.of("error", "Authentication Failed"));
+        }
 
         String token = jwtService.generateToken(user);
-
         log.info("[LOGIN] {} logged in at {}", user.getUsername(), LocalDateTime.now());
+
         return ResponseEntity.ok(new AuthResponseDto(token));
     }
 
