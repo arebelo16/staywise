@@ -11,6 +11,7 @@ import com.domiledge.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -34,10 +36,11 @@ public class UserService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    public UserResponseDto register(UserDto dto) {
+    public Pair<Optional<UserResponseDto>, String> register(UserDto dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
             log.error("Username: {} already exists", dto.getUsername());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exist");
+            return Pair.of(Optional.empty(), "Username: "+dto.getUsername()+" already exists");
+            //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exist");
         }
 
         String email = dto.getEmail();
@@ -45,7 +48,8 @@ public class UserService {
 
         if (userRepository.findAll().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(email))) {
             log.error("Email: {} already exists", email);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
+            return Pair.of(Optional.empty(), "Email: "+email+" already exists");
+            //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
         }
 
         User user = userMapper.toEntity(dto);
@@ -64,7 +68,7 @@ public class UserService {
         String message = "Hello, click here to confirm your email: " + link;
         emailService.sendEmail(user.getEmail(), "Email Confirmation - Domiledge", message);
 
-        return userMapper.toDto(user);
+        return Pair.of(Optional.of(userMapper.toDto(user)), "");
     }
 
     public void confirmEmail(String token) {
