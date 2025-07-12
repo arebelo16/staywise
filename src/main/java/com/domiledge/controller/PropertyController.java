@@ -1,10 +1,13 @@
 package com.domiledge.controller;
 
 import com.domiledge.dto.PropertyDto;
+import com.domiledge.model.User;
+import com.domiledge.repository.PropertyRepository;
 import com.domiledge.service.AuthenticatedUserProvider;
 import com.domiledge.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +20,7 @@ import java.util.UUID;
 public class PropertyController {
 
     private final PropertyService propertyService;
+    private final PropertyRepository propertyRepository;
     private final AuthenticatedUserProvider userProvider;
 
     @GetMapping
@@ -49,4 +53,9 @@ public class PropertyController {
         return ResponseEntity.ok(imageUrl);
     }
 
+    @GetMapping("/{id}/cover")
+    public ResponseEntity<?> getCoverImage(@PathVariable UUID id,
+                                           @AuthenticationPrincipal User user) {
+        return propertyService.loadCoverImage(id, user);
+    }
 }

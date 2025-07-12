@@ -39,7 +39,7 @@ public class UserService {
     public Pair<Optional<UserResponseDto>, String> register(UserDto dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
             log.error("Username: {} already exists", dto.getUsername());
-            return Pair.of(Optional.empty(), "Username: "+dto.getUsername()+" already exists");
+            return Pair.of(Optional.empty(), "Username: " + dto.getUsername() + " already exists");
             //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exist");
         }
 
@@ -48,7 +48,7 @@ public class UserService {
 
         if (userRepository.findAll().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(email))) {
             log.error("Email: {} already exists", email);
-            return Pair.of(Optional.empty(), "Email: "+email+" already exists");
+            return Pair.of(Optional.empty(), "Email: " + email + " already exists");
             //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
         }
 

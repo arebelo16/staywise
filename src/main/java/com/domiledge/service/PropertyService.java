@@ -5,12 +5,18 @@ import com.domiledge.mapper.PropertyMapper;
 import com.domiledge.model.Property;
 import com.domiledge.model.User;
 import com.domiledge.repository.PropertyRepository;
+import com.domiledge.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -23,6 +29,7 @@ public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper;
+    private final ImageService imageService;
 
     public List<PropertyDto> getAllForUser(User user) {
         return propertyRepository.findAllByOwner(user)
@@ -63,37 +70,56 @@ public class PropertyService {
                 .filter(p -> p.getOwner().getId().equals(user.getId()))
                 .orElseThrow(() -> new RuntimeException("Property not found or unauthorized"));
 
-        // Validate file extension
+        // Validate original file extension
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || !originalFilename.matches("(?i)^.*\\.(jpg|jpeg|png|webp)$")) {
             throw new IllegalArgumentException("Invalid image file type. Only JPG, JPEG, PNG, and WEBP are allowed.");
         }
 
-        // Generate a safe and unique filename
-        String filename = UUID.randomUUID() + "_" + originalFilename.replaceAll("\\s+", "_");
+        // Convert the image and save it as PNG
+        String imageUrl = imageService.convertToPngAndSave(file, user.getId(), propertyId);
 
-        // Define directory structure: uploads/{userId}/{propertyId}/
-        Path uploadDir = Paths.get("uploads", user.getId().toString(), propertyId.toString());
-        Path fullPath = uploadDir.resolve(filename);
-
-        try {
-            // Create the directory if it doesn't exist
-            Files.createDirectories(uploadDir);
-
-            // Write file bytes to disk
-            Files.write(fullPath, file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save image", e);
-        }
-
-        // Set relative URL for accessing the image
-        String url = "/uploads/" + user.getId() + "/" + propertyId + "/" + filename;
-        property.setCoverImageUrl(url);
+        // Update the property with the new image URL
+        property.setCoverImageUrl(imageUrl);
         propertyRepository.save(property);
 
-        return url;
+        return imageUrl;
     }
 
 
+    public ResponseEntity<?> loadCoverImage(UUID propertyId, User user) {
+        // Verify the property exists and belongs to the authenticated user
+        Property property = propertyRepository.findById(propertyId)
+                .filter(p -> p.getOwner().getId().equals(user.getId()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Property not found or unauthorized"));
+
+        String coverImageUrl = property.getCoverImageUrl();
+        if (coverImageUrl == null || coverImageUrl.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cover image not set");
+        }
+
+        try {
+            // Resolve the file path securely
+            Path filePath = Paths.get("uploads")
+                    .resolve(user.getId().toString())
+                    .resolve(property.getId().toString())
+                    .resolve(Paths.get(coverImageUrl).getFileName().toString());
+
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found or unreadable");
+            }
+
+            // Return the image with appropriate headers
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not load image", e);
+        }
+    }
 
 }
